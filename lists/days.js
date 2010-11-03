@@ -24,7 +24,7 @@ function(head, req) {
 //				send(JSON.stringify(rows, null, "\t"));
 				rows.forEach(function (row, idx) {
 				log((row.value/top)*100);
-					send('<a href="/irc-logs-couchone-internal/_design/logs/_list/chats/all-by-channel?startkey=[%22%23%23couchone-internal%22, [%22'+row.key[1][0]+'%22,%22'+row.key[1][1]+'%22,%22'+row.key[1][2]+'%22]]&reduce=false">');
+					send('<a href="/irc-logs-couchone-internal/_design/logs/_list/chats/all-by-channel?startkey=[%22%23%23couchone-internal%22, [%22'+row.key[1][0]+'%22,%22'+row.key[1][1]+'%22,%22'+row.key[1][2]+'%22]]&endkey=[%22%23%23couchone-internal%22, [%22'+row.key[1][0]+'%22,%22'+row.key[1][1]+'%22,%22'+row.key[1][2]+'%22]]&reduce=false">');
 					send(row.key[1][0]+'-'+row.key[1][1]+'-'+row.key[1][2]+'</a>');
 					send('<div class="bar"><div style="width:'+((row.value/top)*100)+'%">&nbsp;</div></div>');
 				});
