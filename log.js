@@ -6,16 +6,34 @@ var ircOptions = {
     server: 'irc.freenode.net'
 };
 
-var couchOptions = {
-    uri:'http://127.0.0.1:5984/couchdbirc',
-    method:'POST',
-    headers:{'content-type':'application/json'}
-};
-
-var opts = {
+var defaults = {
     nick : 'couchlogbot',
     room : '#couchlog',
-    roomPass : '******'
+    roomPass : '******',
+    couchUser: '',
+    couchPass: ''
+};
+
+if(process.env.help) {
+  console.log('The following environment variables set the behaviour:');
+  console.log('');
+  console.log('Name\tDefault');
+  console.log('=-=-=-=-=-=-=-=');
+  for (var key in defaults) {
+    console.log(key + '\t' + '"' + defaults[key] + '"');
+  }
+  process.exit(0);
+}
+
+var opts = {};
+for (var key in defaults) {
+  opts[key] = process.env[key] || defaults[key];
+}
+
+var couchOptions = {
+    uri: 'http://' + (opts.couchUser == '' ? '' : opts.couchUser + ':' + opts.couchPass + '@') + '127.0.0.1:5984/couchdbirc',
+    method:'POST',
+    headers:{'content-type':'application/json'}
 };
 
 var bot = new irc(ircOptions);
