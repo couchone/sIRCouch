@@ -11,7 +11,8 @@ var defaults = {
     room : '#couchlog',
     roomPass : '******',
     couchUser: '',
-    couchPass: ''
+    couchPass: '',
+    hello: ''
 };
 
 if(process.env.help) {
@@ -45,6 +46,10 @@ bot.connect(function () {
     bot.join(opts.room, opts.roomPass);
   } else {
     bot.join(opts.room);
+  }
+
+  if(opts.hello) {
+    setTimeout(function() { bot.privmsg(opts.room, opts.hello); }, 1000);
   }
   
   bot.addListener('privmsg', function (message) {
