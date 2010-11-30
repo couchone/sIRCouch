@@ -69,7 +69,7 @@ bot.connect(function () {
       });
 
       if(message.message && new RegExp(opts.nick).test(message.message)) {
-        var cmd_re = new RegExp(opts.nick + '.*?(\\w+)\\s*(.*)$');
+        var cmd_re = new RegExp(opts.nick + '.*?\\s(\\w+)\\s*(.*)$');
         var cmd_match = message.message.match(cmd_re);
         if(!cmd_match) {
           bot.privmsg(opts.room, 'Who said my name? Type `' + opts.nick + ' help` for command listing');
