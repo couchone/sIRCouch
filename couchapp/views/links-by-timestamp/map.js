@@ -5,9 +5,10 @@ function(doc) {
            .reduce(function(state, res) { return state || res });
   }
 
-  if(doc.message && doc.timestamp) {
+  if(doc.message && doc.timestamp && doc.person && doc.person.nick) {
     var link_candidates = [ /http:\/\// , /www\./ , /\.com/, /\.io/ ];
     if(contains_match(doc.message, link_candidates)) {
+      emit([doc.person.nick, doc.timestamp]);
       // First split the message into space-delimited words. Then URLs are further split so we can query their parts.
       var words = doc.message.split(/\s+/);
       words.forEach(function(word) {
