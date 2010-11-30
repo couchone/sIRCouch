@@ -92,13 +92,13 @@ bot.connect(function () {
               var keyword = cmd_opts.tag || cmd_opts.link
                 , startkey = [keyword, null]
                 , endkey   = [keyword, {}]
-                , limit    = cmd_opts.limit || '5'
+                , limit    = parseInt(cmd_opts.limit || '5') // This will be done client-side to show 5/10 results found.
                 , view = cmd_opts.tag ? 'tags-by-timestamp' : 'links-by-timestamp'
                 ;
 
               startkey = encodeURIComponent(JSON.stringify(startkey));
               endkey = encodeURIComponent(JSON.stringify(endkey));
-              var query = { uri: couchdb_uri + '/_design/logs/_view/' + view + '?limit=' + limit + '&include_docs=true&reduce=false&startkey=' + startkey + '&endkey=' + endkey };
+              var query = { uri: couchdb_uri + '/_design/logs/_view/' + view + '?include_docs=true&reduce=false&startkey=' + startkey + '&endkey=' + endkey };
               request(query, function(er, resp, body) {
                 if(er) {
                   bot.privmsg(opts.room, 'HTTP error: ' + body);
@@ -107,10 +107,14 @@ bot.connect(function () {
                   if(body.error) {
                     bot.privmsg(opts.room, 'Query error: ' + JSON.stringify(body));
                   } else {
-                    bot.privmsg(opts.room, 'Query for ' + cmd_match[2] + ' found: ' + body.rows.length);
-                    body.rows.forEach(function(row) {
-                      bot.privmsg(opts.room, row.doc.timestamp + ' ' + row.doc.person.nick + ': ' + row.doc.message);
-                    })
+                    if(body.rows.length == 0) {
+                      bot.privmsg(opts.room, 'Query for ' + cmd_match[2] + ' -- No results found');
+                    } else {
+                      bot.privmsg(opts.room, 'Query for ' + cmd_match[2] + ' returned ' + (limit < body.rows.length ? limit : body.rows.length) + '/' + body.rows.length);
+                      body.rows.slice(0, limit).forEach(function(row) {
+                        bot.privmsg(opts.room, row.doc.timestamp + ' ' + row.doc.person.nick + ': ' + row.doc.message);
+                      })
+                    }
                   }
                 }
               })
