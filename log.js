@@ -67,8 +67,28 @@ bot.connect(function () {
         sys.puts(body);
       });
 
-      if(message.message && new RegExp(opts.nick).test(message.message))
-        bot.privmsg(opts.room, 'Who said my name?');
+      if(message.message && new RegExp(opts.nick).test(message.message)) {
+        var cmd_re = new RegExp(opts.nick + '.*?(\\w+)\\s*(.*)$');
+        var cmd_match = message.message.match(cmd_re);
+        if(!cmd_match) {
+          bot.privmsg(opts.room, 'Who said my name? Type `' + opts.nick + ' help` for command listing');
+        } else {
+          // Command is one word, and the options are "key1=val1 key2=val2" pairs, converted to an object.
+          var command = cmd_match[1];
+          var cmd_opts = cmd_match[2].split(/\s+/).map(function(pair) { return pair.split(/=/) }).reduce(function(state, kv) { if(kv[0] && kv[1]) { state[kv[0]] = kv[1]; } return state }, {});
+
+          if(command == 'help') {
+            [ 'Supported commands:'
+            , '  help -- display help'
+            , '  search -- history search (either tag=some_hashtag or link=some_word)'
+            ].forEach(function(line) { bot.privmsg(opts.room, line) });
+          } else if(command == 'search') {
+            if(cmd_opts.tag) {
+            } else if(cmd_opts.link) {
+            }
+          }
+        }
+      }
     }
   });
 });
