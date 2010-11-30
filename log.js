@@ -92,7 +92,7 @@ bot.connect(function () {
               var keyword = cmd_opts.tag || cmd_opts.link
                 , startkey = [keyword, null]
                 , endkey   = [keyword, {}]
-                , view = cmd_opts.tag ? 'tags-by-timestamp' : 'not-implemented'
+                , view = cmd_opts.tag ? 'tags-by-timestamp' : 'links-by-timestamp'
                 ;
 
               startkey = encodeURIComponent(JSON.stringify(startkey));
