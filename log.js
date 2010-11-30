@@ -83,7 +83,7 @@ bot.connect(function () {
           if(command == 'help') {
             [ 'Supported commands:'
             , '  help -- display help'
-            , '  search -- history search (either tag=some_hashtag or link=some_word)'
+            , '  search -- history search: tag=some_hashtag or link=some_word; also limit=NN'
             ].forEach(function(line) { bot.privmsg(opts.room, line) });
           } else if(command == 'search') {
             if(!('tag' in cmd_opts) && !('link' in cmd_opts)) {
@@ -92,12 +92,13 @@ bot.connect(function () {
               var keyword = cmd_opts.tag || cmd_opts.link
                 , startkey = [keyword, null]
                 , endkey   = [keyword, {}]
+                , limit    = cmd_opts.limit || '5'
                 , view = cmd_opts.tag ? 'tags-by-timestamp' : 'links-by-timestamp'
                 ;
 
               startkey = encodeURIComponent(JSON.stringify(startkey));
               endkey = encodeURIComponent(JSON.stringify(endkey));
-              var query = { uri: couchdb_uri + '/_design/logs/_view/' + view + '?limit=10&include_docs=true&reduce=false&startkey=' + startkey + '&endkey=' + endkey };
+              var query = { uri: couchdb_uri + '/_design/logs/_view/' + view + '?limit=' + limit + '&include_docs=true&reduce=false&startkey=' + startkey + '&endkey=' + endkey };
               request(query, function(er, resp, body) {
                 if(er) {
                   bot.privmsg(opts.room, 'HTTP error: ' + body);
