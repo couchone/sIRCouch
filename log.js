@@ -65,6 +65,9 @@ bot.connect(function () {
       request(couchOptions, function (err, resp, body) {
         sys.puts(body);
       });
+
+      if(message.message && new RegExp(opts.nick).test(message.message))
+        bot.privmsg(opts.room, 'Who said my name?');
     }
   });
 });
