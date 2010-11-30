@@ -6,7 +6,7 @@ function(doc) {
   }
 
   if(doc.message && doc.timestamp && doc.person && doc.person.nick) {
-    var link_candidates = [ /http:\/\// , /www\./ , /\.com/, /\.io/ ];
+    var link_candidates = [ /http:\/\// , /https:\/\//, /www\./ , /\.com/, /\.io/ ];
     if(contains_match(doc.message, link_candidates)) {
       emit([doc.person.nick, doc.timestamp]);
       // First split the message into space-delimited words. Then URLs are further split so we can query their parts.
