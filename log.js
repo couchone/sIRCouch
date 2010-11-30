@@ -86,8 +86,33 @@ bot.connect(function () {
             , '  search -- history search (either tag=some_hashtag or link=some_word)'
             ].forEach(function(line) { bot.privmsg(opts.room, line) });
           } else if(command == 'search') {
-            if(cmd_opts.tag) {
-            } else if(cmd_opts.link) {
+            if(!('tag' in cmd_opts) && !('link' in cmd_opts)) {
+              bot.privmsg(opts.room, "Unknown search. Use `help` command to see syntax.");
+            } else {
+              var keyword = cmd_opts.tag || cmd_opts.link
+                , startkey = [keyword, null]
+                , endkey   = [keyword, {}]
+                , view = cmd_opts.tag ? 'tags-by-timestamp' : 'not-implemented'
+                ;
+
+              startkey = encodeURIComponent(JSON.stringify(startkey));
+              endkey = encodeURIComponent(JSON.stringify(endkey));
+              var query = { uri: couchdb_uri + '/_design/logs/_view/' + view + '?limit=10&include_docs=true&reduce=false&startkey=' + startkey + '&endkey=' + endkey };
+              request(query, function(er, resp, body) {
+                if(er) {
+                  bot.privmsg(opts.room, 'HTTP error: ' + body);
+                } else {
+                  body = JSON.parse(body);
+                  if(body.error) {
+                    bot.privmsg(opts.room, 'Query error: ' + JSON.stringify(body));
+                  } else {
+                    bot.privmsg(opts.room, 'Query for ' + cmd_match[2] + ' found: ' + body.rows.length);
+                    body.rows.forEach(function(row) {
+                      bot.privmsg(opts.room, row.doc.timestamp + ' ' + row.doc.person.nick + ': ' + row.doc.message);
+                    })
+                  }
+                }
+              })
             }
           }
         }
