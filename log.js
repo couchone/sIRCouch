@@ -32,8 +32,9 @@ for (var key in defaults) {
   opts[key] = process.env[key] || defaults[key];
 }
 
+var couchdb_uri = 'http://' + (opts.couchUser == '' ? '' : opts.couchUser + ':' + opts.couchPass + '@') + opts.couchdb.replace(/^http:\/\//, '').replace(/\/$/, '');
 var couchOptions = {
-    uri: 'http://' + (opts.couchUser == '' ? '' : opts.couchUser + ':' + opts.couchPass + '@') + opts.couchdb.replace(/^http:\/\//, ''),
+    uri: couchdb_uri,
     method:'POST',
     headers:{'content-type':'application/json'}
 };
