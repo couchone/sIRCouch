@@ -83,7 +83,7 @@ bot.connect(function () {
           if(command == 'help') {
             [ 'Supported commands:'
             , '  help -- display help'
-            , '  search -- history search: tag=some_hashtag or link=some_word; also limit=NN'
+            , '  search -- history search: tag=some_hashtag or link=some_word_or_nick; optionally limit=NN'
             ].forEach(function(line) { bot.privmsg(opts.room, line) });
           } else if(command == 'search') {
             if(!('tag' in cmd_opts) && !('link' in cmd_opts)) {
