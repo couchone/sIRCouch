@@ -7,6 +7,7 @@ var ircOptions = {
 };
 
 var defaults = {
+    couchdb: 'http://127.0.0.1:5984/couchdbirc',
     nick : 'couchlogbot',
     room : '#couchlog',
     roomPass : '******',
@@ -32,7 +33,7 @@ for (var key in defaults) {
 }
 
 var couchOptions = {
-    uri: 'http://' + (opts.couchUser == '' ? '' : opts.couchUser + ':' + opts.couchPass + '@') + '127.0.0.1:5984/couchdbirc',
+    uri: 'http://' + (opts.couchUser == '' ? '' : opts.couchUser + ':' + opts.couchPass + '@') + opts.couchdb.replace(/^http:\/\//, ''),
     method:'POST',
     headers:{'content-type':'application/json'}
 };
