@@ -75,7 +75,9 @@ bot.connect(function () {
         } else {
           // Command is one word, and the options are "key1=val1 key2=val2" pairs, converted to an object.
           var command = cmd_match[1];
-          var cmd_opts = cmd_match[2].split(/\s+/).map(function(pair) { return pair.split(/=/) }).reduce(function(state, kv) { if(kv[0] && kv[1]) { state[kv[0]] = kv[1]; } return state }, {});
+          var cmd_opts = cmd_match[2].split(/\s+/)
+                         .map(function(pair) { return pair.split(/=/) })
+                         .reduce(function(state, kv) { if(kv[0] && kv[1]) { state[kv[0]] = kv[1]; } return state }, {});
 
           if(command == 'help') {
             [ 'Supported commands:'
