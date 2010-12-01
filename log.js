@@ -110,8 +110,12 @@ bot.connect(function () {
                     if(body.rows.length == 0) {
                       bot.privmsg(opts.room, 'Query for ' + cmd_match[2] + ' -- No results found');
                     } else {
-                      bot.privmsg(opts.room, 'Query for ' + cmd_match[2] + ' returned ' + (limit < body.rows.length ? limit : body.rows.length) + '/' + body.rows.length);
-                      body.rows.slice(0, limit).forEach(function(row) {
+                      if(limit > body.rows.length)
+                        limit = body.rows.length;
+                      bot.privmsg(opts.room, 'query for ' + cmd_match[2] + ' returned ' + limit + '/' + body.rows.length);
+
+                      // The elements are in correct order for IRC (oldest first). But slice the *latest* `limit` of them to display.
+                      body.rows.slice(body.rows.length - limit).forEach(function(row) {
                         bot.privmsg(opts.room, row.doc.timestamp + ' ' + row.doc.person.nick + ': ' + row.doc.message);
                       })
                     }
