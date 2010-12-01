@@ -83,12 +83,17 @@ bot.connect(function () {
           if(command == 'help') {
             [ 'Supported commands:'
             , '  help -- display help'
-            , '  search -- history search: tag=some_hashtag or link=some_word_or_nick; optionally limit=NN'
+            , '  search -- mandatory: tag=some_hashtag or link=some_word_or_nick; optional: limit=NN aloud=true'
             ].forEach(function(line) { bot.privmsg(opts.room, line) });
           } else if(command == 'search') {
             if(!('tag' in cmd_opts) && !('link' in cmd_opts)) {
               bot.privmsg(opts.room, "Unknown search. Use `help` command to see syntax.");
             } else {
+
+              function say(line) {
+                return bot.privmsg(cmd_opts.aloud ? opts.room : message.person.nick, line);
+              }
+
               var keyword = cmd_opts.tag || cmd_opts.link
                 , startkey = [keyword, null]
                 , endkey   = [keyword, {}]
@@ -101,22 +106,22 @@ bot.connect(function () {
               var query = { uri: couchdb_uri + '/_design/logs/_view/' + view + '?include_docs=true&reduce=false&startkey=' + startkey + '&endkey=' + endkey };
               request(query, function(er, resp, body) {
                 if(er) {
-                  bot.privmsg(opts.room, 'HTTP error: ' + body);
+                  say('HTTP error: ' + body);
                 } else {
                   body = JSON.parse(body);
                   if(body.error) {
-                    bot.privmsg(opts.room, 'Query error: ' + JSON.stringify(body));
+                    say('Query error: ' + JSON.stringify(body));
                   } else {
                     if(body.rows.length == 0) {
-                      bot.privmsg(opts.room, 'Query for ' + cmd_match[2] + ' -- No results found');
+                      say('Query for ' + cmd_match[2] + ' -- No results found');
                     } else {
                       if(limit > body.rows.length)
                         limit = body.rows.length;
-                      bot.privmsg(opts.room, 'query for ' + cmd_match[2] + ' returned ' + limit + '/' + body.rows.length);
+                      say('query for ' + cmd_match[2] + ' returned ' + limit + '/' + body.rows.length);
 
                       // The elements are in correct order for IRC (oldest first). But slice the *latest* `limit` of them to display.
                       body.rows.slice(body.rows.length - limit).forEach(function(row) {
-                        bot.privmsg(opts.room, row.doc.timestamp + ' ' + row.doc.person.nick + ': ' + row.doc.message);
+                        say(row.doc.timestamp + ' ' + row.doc.person.nick + ': ' + row.doc.message);
                       })
                     }
                   }
