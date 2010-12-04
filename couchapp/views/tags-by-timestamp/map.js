@@ -1,5 +1,5 @@
 function(doc) {
-  var tag_re = /\B#\w+/g; // Hash then anything, as long as the hash isn't e.g. in a URL.
+  var tag_re = /\B#(\w|[_-])+/g; // Hash then anything, as long as the hash isn't e.g. in a URL.
 
   if(doc.message && doc.timestamp) {
     //var stamp = doc.timestamp.split('-');
