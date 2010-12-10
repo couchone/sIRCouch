@@ -1,10 +1,9 @@
 [
   {
-  "from": "/",
+  "from": "",
   "to" : "_list/days/all-by-channel",
   "query" : {
-      "startkey" : ["##couchone-internal"],
-      "endkey" : ["##couchone-internal",{}],
+      "startkey" : ["##couchone-internal",{}],
       "group" : true,
       "descending" : true
   	}
