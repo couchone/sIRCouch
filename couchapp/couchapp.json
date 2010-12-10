@@ -1,4 +1,1 @@
-{
-    "name": "sIRCouch",
-    "description": "A knighted IRC log viewer for CouchDB"
-}
+{"description": "CouchApp", "name": "irc-logs"}
