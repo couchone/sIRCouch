@@ -32,7 +32,7 @@ function(head, req) {
 						var msg = row.value.message.substr(7);
 						send(row.value.person.nick+' '+msg.substr(0, msg.length-1));
 					} else {
-						send('&lt;'+row.value.person.nick+'&gt; '+row.value.message);
+						send(mustache.to_html("&lt;{{#person}}{{nick}}{{/person}}&gt; {{message}}", row.value));
 					}
 					send('</span></li>');
 				});
